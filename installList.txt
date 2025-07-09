@@ -1,7 +1,7 @@
-run npm init -y 
-copy this into package.json scripts section and run the command in terminal
+run npm init -y run npm install --save-dev webpack webpack-cli && npm install --save-dev html-webpack-plugin && npm install --save-dev style-loader css-loader && npm install --save-dev webpack-dev-server && npm install --save-dev html-loader npm install --save-dev --save-exact prettier npm install --save-dev jest && npm init @eslint/config@latest && node --eval "fs.writeFileSync('.prettierrc','{}\n')" && node --eval "fs.writeFileSync('.prettierignore','# Ignore artifacts:\nbuild\ncoverage\n')" 
 
-    ,"setup": "npm install --save-dev webpack webpack-cli && npm install --save-dev html-webpack-plugin && npm install --save-dev style-loader css-loader && npm install --save-dev webpack-dev-server && npm install --save-dev html-loader npm install --save-dev --save-exact prettier node --eval "fs.writeFileSync('.prettierrc','{}\n')" node --eval "fs.writeFileSync('.prettierignore','# Ignore artifacts:\nbuild\ncoverage\n')""
-    ,"format": "npx prettier . --write"
+copy this into package.json scripts section 
+"test": "jest", 
+"format": "npx prettier . --write" 
 
 run npx webpack to get the dist directory
