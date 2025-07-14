@@ -28,6 +28,10 @@ export function Gameboard(n) {
     // user clicks what kind of ship to place, dom returns the length of that kind of ship
     // user selects if horizontal or vertical placement, dom returns direction
     // x1,y1 = bottom/left point of ship depending on direction
+    // 1 4 length ship
+    // 2 3 length ships
+    // 3 2 length ships
+    // 4 1 length ships
     function placeShip({ x1, y1 }, length, direction) {
         if (checkSpace({ x1, y1 }, length, direction)) {
             let shipCoords = [];
@@ -155,7 +159,7 @@ export function Gameboard(n) {
             }
             // check if all ships sunken here
             if (isAllSunken()) {
-                console.log("all ships sunken");
+                console.log("all player" + n + "'s ships sunken");
             }
             updateBox(player, x, y, "9");
             return null;

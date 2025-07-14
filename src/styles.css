@@ -176,6 +176,10 @@ body {
   background-color: rebeccapurple;
 }
 
+.notPlaying {
+  pointer-events: none;
+}
+
 #p1-sec,
 #p2-sec {
   display: flex;
