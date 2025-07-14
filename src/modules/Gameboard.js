@@ -5,7 +5,7 @@ export function Gameboard() {
     // 1 = hit
     // 6 = Ship
     // 9 = Hit ship piece
-    this.grid = [
+    let grid = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -18,31 +18,33 @@ export function Gameboard() {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
     // array of objects representing coordinates
-    this.ships = [];
-    this.sunken = [];
-    this.hits = [];
-    this.missed = [];
+    let ships = [];
+    let sunken = [];
+    let hits = [];
+    let missed = [];
+
     // user clicks what kind of ship to place, dom returns the length of that kind of ship 
     // user selects if horizontal or vertical placement, dom returns direction
     // x1,y1 = bottom/left point of ship depending on direction
     function placeShip({ x1, y1 }, length, direction) {
+        console.log(checkSpace({ x1, y1 }, length, direction))
         if (checkSpace({ x1, y1 }, length, direction)) {
             let shipCoords = [];
             if (direction == "x") {
                 for (let i = 0; i < length; i++) {
-                    this.grid[y1][x1 + i] = 6;
+                    grid[y1][x1 + i] = 6;
                     let x = x1 + i;
                     shipCoords.push([y1, x]);
                 }
             } else {
                 for (let i = 0; i < length; i++) {
-                    this.grid[y1 + i][x1] = 6;
+                    grid[y1 + i][x1] = 6;
                     let y = y1 + i;
                     shipCoords.push([y, x1]);
                 }
             }
             let ship = new Ship();
-            this.ships.push({ ship: ship, coords: shipCoords });
+            ships.push({ ship: ship, coords: shipCoords });
         }
     };
     // O(N) efficiency N = length
@@ -53,45 +55,51 @@ export function Gameboard() {
             return false;
         }
         if (direction == "x") {
-            // middle left
-            if (this.grid[y1][x1 - 1] == 6
+            // if left of the ship is in range and the value left of the ship are not empty, return false
+            if (x1 - 1 >= 0 && (grid[y1][x1 - 1] != 0
                 // top left
-                || this.grid[y1 - 1][x1 - 1] == 6
+                || (y1 - 1 >= 0 && grid[y1 - 1][x1 - 1] != 0)
                 // bottom left
-                || this.grid[y1 + 1][x1 - 1] == 6) {
+                || (y1 + 1 <= 9 && grid[y1 + 1][x1 - 1] != 0))) {
                 return false;
             }
+            // loop and check if ship values and if values around the ship are in range and not empty in which case return false
             for (let i = 0; i < length; i++) {
-                // middle and if out of grid
-                if (this.grid[y1][x1 + i] == 6
-                    || x1 + i > 9
-                    // might run into issues with checking off grid values if you cant compare undefined
+                // middle
+                if ((x1 + i > 9 || grid[y1][x1 + i] != 0) ||
                     // bottom
-                    || this.grid[y1 + 1][x1] == 6
+                    (y1 + 1 <= 9 && grid[y1 + 1][x1 + i] != 0) ||
                     // top
-                    || this.grid[y1 - 1][x1] == 6
+                    (y1 - 1 >= 0 && grid[y1 - 1][x1 + i] != 0)
                 ) {
                     return false;
                 }
             }
+            // if right of the ship is in range and the values right of the ship are not empty, return false
+            if (x1 + length <= 9 && (grid[y1][x1 + length] != 0
+                // top right
+                || (y1 - 1 >= 0 && grid[y1 - 1][x1 + length] != 0)
+                // bottom right
+                || (y1 + 1 <= 9 && grid[y1 + 1][x1 + length] != 0))) {
+                return false;
+            }
         } else {
+            if (y1 + 1 > 9) { /* skip else */ }
             // middle bottom
-            if (this.grid[y1 + 1][x1] == 6
+            else if (grid[y1 + 1][x1] == 6
                 // left bottom
-                || this.grid[y1 + 1][x1 - 1] == 6
+                || (x1 - 1 < 0 || grid[y1 + 1][x1 - 1] == 6)
                 // right bottom
-                || this.grid[y1 + 1][x1 + 1] == 6) {
+                || (x1 + 1 > 9 || grid[y1 + 1][x1 + 1] == 6)) {
                 return false;
             }
             for (let i = 0; i < length; i++) {
-                // middle and if out of grid
-                if (this.grid[y1 + i][x1] == 6
-                    || x1 + i > 9
-                    // might run into issues with checking off grid values if you cant compare undefined
+                // middle 
+                if ((x1 + i > 9 || grid[y1 + i][x1] == 6)
                     // left
-                    || this.grid[y1][x1 - 1] == 6
+                    || (x1 - 1 < 0 || grid[y1][x1 - 1] == 6)
                     // right
-                    || this.grid[y1][x1 + 1] == 6
+                    || (x1 + 1 > 9 || grid[y1][x1 + 1] == 6)
                 ) {
                     return false;
                 }
@@ -100,22 +108,36 @@ export function Gameboard() {
         return true;
     };
     function receiveAttack({ x, y }) {
-        if (this.grid[y][x] == 6) {
-            this.grid[y][x] = 9;
-            for (let i = 0; i < this.ships.length; i++) {
-                if (this.ships[i].coords[1] == x && this.ships[i].coords[2] == y) {
-                    this.ships[i].ship.hit();
+        if (grid[y][x] == 6) {
+            grid[y][x] = 9;
+            hits.push([y, x]);
+            for (let i = 0; i < ships.length; i++) {
+                if (ships[i].coords[1] == x && ships[i].coords[2] == y) {
+                    ships[i].ship.hit();
                 }
             }
+            // check if all ships sunken here
+            if (isAllSunken) {
+                console.log("all ships sunken");
+            };
             return null;
         }
+        grid[y][x] == 1;
+        missed.push([y, x]);
         return { x, y };
     };
     function isAllSunken() {
-        if (this.ships.length == this.sunken.length) {
+        if (ships.length == sunken.length) {
             return true;
         }
         return false;
     };
-    return { placeShip, receiveAttack, isAllSunken };
+    function print() {
+        console.log(grid);
+    }
+    function getGrid() {
+        return grid;
+
+    };
+    return { placeShip, receiveAttack, isAllSunken, print, getGrid };
 };
