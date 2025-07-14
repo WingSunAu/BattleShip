@@ -214,3 +214,7 @@ body {
 #footer h1 {
   margin-top: 40px;
 }
+
+.ship {
+  background-color: grey;
+}

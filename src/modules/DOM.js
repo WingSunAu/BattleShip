@@ -4,13 +4,14 @@ export function render(arr, player) {
         for (let j = 0; j < arr[i].length; j++) {
             let box = document.createElement("button");
             box.classList.add("box");
-            box.id = player + "" + i + "" + j;
+            box.id = player + "" + j + "" + i;
             box.textContent = "0";
             grid.appendChild(box);
         }
     }
 }
-export function updateBox(grid, x, y, text) {
-    let box = document.getElementById(grid + "" + x + "" + y);
+export function updateBox(player, x, y, text) {
+    let box = document.getElementById(player + "" + x + "" + y);
     box.textContent = text;
+    box.classList.add("ship");
 }

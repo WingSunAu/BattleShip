@@ -1,10 +1,12 @@
 import { Ship } from "./Ship";
-export function Gameboard() {
+import { updateBox } from "./DOM";
+export function Gameboard(n) {
     // 10x10 grid
     // 0 = not hit
-    // 1 = hit
+    // 1 = miss
     // 6 = Ship
     // 9 = Hit ship piece
+    let player = n;
     let grid = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -27,7 +29,6 @@ export function Gameboard() {
     // user selects if horizontal or vertical placement, dom returns direction
     // x1,y1 = bottom/left point of ship depending on direction
     function placeShip({ x1, y1 }, length, direction) {
-        console.log(checkSpace({ x1, y1 }, length, direction));
         if (checkSpace({ x1, y1 }, length, direction)) {
             let shipCoords = [];
             if (direction == "x") {
@@ -35,15 +36,17 @@ export function Gameboard() {
                     grid[y1][x1 + i] = 6;
                     let x = x1 + i;
                     shipCoords.push([y1, x]);
+                    updateBox(player, x1 + i, y1, "6");
                 }
             } else {
                 for (let i = 0; i < length; i++) {
                     grid[y1 - i][x1] = 6;
                     let y = y1 - i;
                     shipCoords.push([y, x1]);
+                    updateBox(player, x1, y1 - i, "6");
                 }
             }
-            let ship = new Ship();
+            let ship = new Ship(length);
             ships.push({ ship: ship, coords: shipCoords });
             return true;
         }
@@ -139,19 +142,29 @@ export function Gameboard() {
         if (grid[y][x] == 6) {
             grid[y][x] = 9;
             hits.push([y, x]);
+            // for each ship loop through the ship's coords
             for (let i = 0; i < ships.length; i++) {
-                if (ships[i].coords[1] == x && ships[i].coords[2] == y) {
-                    ships[i].ship.hit();
+                for (let j = 0; j < ships[i].coords.length; j++) {
+                    if (ships[i].coords[j][0] == y && ships[i].coords[j][1] == x) {
+                        ships[i].ship.hit();
+                        console.log(ships[i].ship.isSunk());
+                        if (ships[i].ship.isSunk()) {
+                            sunken.push(ships[i]);
+                        }
+                    }
                 }
             }
+            console.log(sunken);
             // check if all ships sunken here
-            if (isAllSunken) {
+            if (isAllSunken()) {
                 console.log("all ships sunken");
             }
+            updateBox(player, x, y, "9");
             return null;
         }
-        grid[y][x] == 1;
+        grid[y][x] = 1;
         missed.push([y, x]);
+        updateBox(player, x, y, "1");
         return { x, y };
     }
     function isAllSunken() {

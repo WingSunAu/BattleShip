@@ -1,15 +1,16 @@
-export function Ship(length) {
-  this.length = length;
-  this.hits = 0;
-  this.sunk = false;
+export function Ship(len) {
+  let length = len;
+  let hits = 0;
+  let sunk = false;
   function hit() {
-    this.hits++;
+    hits++;
   }
   function isSunk() {
-    if (this.hits == length) {
-      this.sunk = true;
+    console.log(hits);
+    if (hits == length) {
+      sunk = true;
     }
-    return this.sunk;
+    return sunk;
   }
   return { hit, isSunk };
 }
