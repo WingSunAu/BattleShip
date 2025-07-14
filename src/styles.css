@@ -218,3 +218,11 @@ body {
 .ship {
   background-color: grey;
 }
+
+.sunken {
+  background-color: rgb(117, 10, 10);
+}
+
+.miss {
+  background-color: rgb(14, 99, 11);
+}

@@ -147,14 +147,12 @@ export function Gameboard(n) {
                 for (let j = 0; j < ships[i].coords.length; j++) {
                     if (ships[i].coords[j][0] == y && ships[i].coords[j][1] == x) {
                         ships[i].ship.hit();
-                        console.log(ships[i].ship.isSunk());
                         if (ships[i].ship.isSunk()) {
                             sunken.push(ships[i]);
                         }
                     }
                 }
             }
-            console.log(sunken);
             // check if all ships sunken here
             if (isAllSunken()) {
                 console.log("all ships sunken");

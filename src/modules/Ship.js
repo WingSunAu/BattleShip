@@ -6,7 +6,6 @@ export function Ship(len) {
     hits++;
   }
   function isSunk() {
-    console.log(hits);
     if (hits == length) {
       sunk = true;
     }
