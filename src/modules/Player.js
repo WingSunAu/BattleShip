@@ -1,6 +1,9 @@
 import { Gameboard } from "./Gameboard";
-export function Player() {
+export function Player(n, computer) {
+    let order = n;
+    let isComputer = computer;
     let board = new Gameboard();
     let getBoard = () => board;
-    return { getBoard }
+    let getOrder = () => order;
+    return { getBoard, getOrder };
 }
