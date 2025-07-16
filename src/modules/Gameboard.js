@@ -1,5 +1,5 @@
 import { Ship } from "./Ship";
-import { updateBox } from "./DOM";
+import { endGame, updateBox } from "./DOM";
 export function Gameboard(n) {
     // 10x10 grid
     // 0 = not hit
@@ -183,6 +183,7 @@ export function Gameboard(n) {
             // check if all ships sunken here
             if (isAllSunken()) {
                 console.log("all player" + n + "'s ships sunken");
+                endGame();
             }
             updateBox(player, x, y, "9");
             return null;
