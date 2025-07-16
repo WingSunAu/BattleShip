@@ -1,4 +1,4 @@
-export function render(arr, player, callBack) {
+export function render(arr, player, callBack, opp) {
     let grid = document.getElementById("grid" + player.getOrder());
     for (let i = 0; i < arr.length; i++) {
         for (let j = 0; j < arr[i].length; j++) {
@@ -7,11 +7,24 @@ export function render(arr, player, callBack) {
             box.id = player.getOrder() + "" + j + "" + i;
             box.textContent = i + "" + j;
             box.addEventListener("click", () => {
-                callBack({ x: j, y: i });
-                if (player.getOrder() == 1) {
-                    switchTurns(2, 1);
+                // if square already attacked, do nothing
+                if (player.getBoard().checkAttackValid({ x: j, y: i })) {
+                    callBack({ x: j, y: i });
+                    // check if other player is cpu 
+                    // if so, make other player take turn immediately
+                    if (player.getIsComputer()) {
+                        player.getBoard().autoMove(opp);
+                    }
+                    // dont switch turns if opponent is cpu
+                    if (!(opp.getIsComputer() || player.getIsComputer())) {
+                        if (player.getOrder() == 1) {
+                            switchTurns(2, 1);
+                        } else {
+                            switchTurns(1, 2);
+                        }
+                    }
                 } else {
-                    switchTurns(1, 2);
+                    console.log("invalid move!")
                 }
             })
             grid.appendChild(box);
@@ -20,7 +33,6 @@ export function render(arr, player, callBack) {
 }
 export function updateBox(player, x, y, text) {
     let box = document.getElementById(player + "" + x + "" + y);
-    // box.textContent = text;
     if (text == "6") {
         box.classList.add("ship");
     } else if (text == "9") {

@@ -173,7 +173,8 @@ body {
 
 .box {
   border-radius: 0;
-  background-color: rebeccapurple;
+  background-color: purple;
+  /* background-image: url("/home/wing/repos/odin/BattleShip/src/imgs/abstract-pool-water-surface-background-with-sun-light-reflection.jpg"); */
 }
 
 .notPlaying {

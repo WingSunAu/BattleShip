@@ -25,13 +25,30 @@ export function Gameboard(n) {
     let hits = [];
     let missed = [];
 
-    // user clicks what kind of ship to place, dom returns the length of that kind of ship
-    // user selects if horizontal or vertical placement, dom returns direction
-    // x1,y1 = bottom/left point of ship depending on direction
-    // 1 4 length ship
-    // 2 3 length ships
-    // 3 2 length ships
-    // 4 1 length ships
+    function autoMove(opp) {
+        let moved = false;
+        while (!moved) {
+            const x = Math.floor(Math.random() * 10);
+            const y = Math.floor(Math.random() * 10);
+            if (opp.getBoard().getGrid()[y][x] != 9 && opp.getBoard().getGrid()[y][x] != 1) {
+                opp.getBoard().receiveAttack({ x: x, y: y });
+                moved = true;
+            }
+        }
+    }
+    let arr = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
+    function autoPlace() {
+        arr.forEach((len) => {
+            let placed = false;
+            while (!placed) {
+                const x = Math.floor(Math.random() * 10);
+                const y = Math.floor(Math.random() * 10);
+                const dir = Math.floor(Math.random() * 2) == 0 ? "x" : "y";
+                placed = placeShip({ x1: x, y1: y }, len, dir);
+            }
+        })
+    }
+
     function placeShip({ x1, y1 }, length, direction) {
         if (checkSpace({ x1, y1 }, length, direction)) {
             let shipCoords = [];
@@ -142,6 +159,12 @@ export function Gameboard(n) {
         }
         return true;
     }
+    function checkAttackValid({ x, y }) {
+        if (grid[y][x] == 1 || grid[y][x] == 9) {
+            return false;
+        }
+        return true;
+    }
     function receiveAttack({ x, y }) {
         if (grid[y][x] == 6) {
             grid[y][x] = 9;
@@ -168,6 +191,7 @@ export function Gameboard(n) {
         missed.push([y, x]);
         updateBox(player, x, y, "1");
         return { x, y };
+
     }
     function isAllSunken() {
         if (ships.length == sunken.length) {
@@ -181,5 +205,5 @@ export function Gameboard(n) {
     function getGrid() {
         return grid;
     }
-    return { placeShip, receiveAttack, isAllSunken, print, getGrid };
+    return { placeShip, receiveAttack, isAllSunken, print, getGrid, autoPlace, autoMove, checkAttackValid };
 }

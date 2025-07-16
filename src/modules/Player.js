@@ -5,5 +5,6 @@ export function Player(n, computer) {
     let board = new Gameboard(n);
     let getBoard = () => board;
     let getOrder = () => order;
-    return { getBoard, getOrder };
+    let getIsComputer = () => isComputer;
+    return { getBoard, getOrder, getIsComputer };
 }
